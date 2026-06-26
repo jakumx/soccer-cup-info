@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'DM Serif Display', serif;
+  --font-sans: 'Jakarta Sans', system-ui, sans-serif;
+
+  --color-map-0: #f7fbff;
+  --color-map-1: #deebf7;
+  --color-map-2: #c6dbef;
+  --color-map-3: #9ecae1;
+  --color-map-4: #6baed6;
+  --color-map-5: #4292c6;
+  --color-map-6: #2171b5;
+  --color-map-7: #084594;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+}
+
+#root {
+  min-height: 100svh;
+}

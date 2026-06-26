@@ -1,0 +1,33 @@
+name: opencode-review
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  review:
+    if: ${{ !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: anomalyco/opencode/github@latest
+        env:
+          ZEN_API_KEY: ${{ secrets.ZEN_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          model: opencode/big-pickle
+          use_github_token: true
+          prompt: |
+            Review this pull request as a senior developer.
+            - Check for code quality, potential bugs, and security issues
+            - Verify the code follows the project conventions (spec/constitution/tech-stack.md)
+            - Suggest improvements if needed
+            - If no issues found, leave a brief passing review

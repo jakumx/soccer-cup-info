@@ -1,0 +1,42 @@
+{
+  "name": "soccercupinfo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "d3": "^7.9.0",
+    "motion": "^12.42.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": ["oxlint --fix", "tsc --noEmit"],
+    "*.{json,css,md}": ["oxlint --fix"]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.1.0",
+    "@commitlint/config-conventional": "^21.1.0",
+    "@tailwindcss/vite": "^4.3.1",
+    "@types/d3": "^7.4.3",
+    "@types/node": "^24.13.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@types/topojson-client": "^3.1.5",
+    "@vitejs/plugin-react": "^6.0.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
+    "oxlint": "^1.69.0",
+    "tailwindcss": "^4.3.1",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.0"
+  }
+}
