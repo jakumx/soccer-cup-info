@@ -17,8 +17,18 @@ const topoNameToDataKey: Record<string, string> = {
   'Serbia': 'Yugoslavia',
 }
 
+const dataKeyToTopoName: Record<string, string> = {}
+for (const [topo, data] of Object.entries(topoNameToDataKey)) {
+  dataKeyToTopoName[data] = topo
+}
+dataKeyToTopoName['West Germany'] = 'Germany'
+
 function getDataKey(featureName: string): string {
   return topoNameToDataKey[featureName] ?? featureName
+}
+
+export function getTopoName(dataCountryName: string): string {
+  return dataKeyToTopoName[dataCountryName] ?? dataCountryName
 }
 
 export function getCountryData(featureName: string): CountryData {

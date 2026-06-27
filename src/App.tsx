@@ -4,8 +4,11 @@ import WorldMap from './components/WorldMap'
 import WorldMapTooltip from './components/WorldMapTooltip'
 import ColorLegend from './components/ColorLegend'
 import ChampionsList from './components/ChampionsList'
+import YearSelector from './components/YearSelector'
+import TournamentDetails from './components/TournamentDetails'
 import { TimelineSection } from './components/WorldCupHistory'
 import { fifaHistory, hostSelection } from './data/history'
+import worldcupData from './data/worldcups.json'
 import type { TooltipData } from './types'
 
 const tabs = [
@@ -26,6 +29,11 @@ const tabAnimation = {
 function App() {
   const [activeTab, setActiveTab] = useState<TabId>('map')
   const [tooltipData, setTooltipData] = useState<TooltipData | null>(null)
+  const [selectedYear, setSelectedYear] = useState<number | null>(null)
+
+  const selectedTournament = selectedYear
+    ? worldcupData.tournaments.find((t) => t.year === selectedYear)
+    : null
 
   const handleCountryHover = useCallback((data: TooltipData | null) => {
     setTooltipData(data)
@@ -34,6 +42,10 @@ function App() {
   const handleCountryClick = useCallback((countryName: string, code: string) => {
     // TODO: abrir modal con detalle del país
     console.log(`Clicked: ${countryName} (${code})`)
+  }, [])
+
+  const handleYearSelect = useCallback((year: number) => {
+    setSelectedYear((prev) => (prev === year ? null : year))
   }, [])
 
   return (
@@ -76,6 +88,10 @@ function App() {
               id="panel-map"
               aria-labelledby="tab-map"
             >
+              <div className="mb-4">
+                <YearSelector selected={selectedYear} onSelect={handleYearSelect} />
+              </div>
+
               <div className="relative">
                 <div className="rounded-xl border border-neutral-200 bg-white p-2 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
                   <WorldMap
@@ -83,6 +99,7 @@ function App() {
                     height={560}
                     onCountryHover={handleCountryHover}
                     onCountryClick={handleCountryClick}
+                    highlightedCountry={selectedTournament?.host}
                   />
                   <WorldMapTooltip data={tooltipData} />
                 </div>
@@ -92,7 +109,10 @@ function App() {
                 </div>
               </div>
 
-              <div className="mt-10">
+              <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                {selectedTournament && (
+                  <TournamentDetails year={selectedYear} />
+                )}
                 <ChampionsList />
               </div>
             </motion.div>
