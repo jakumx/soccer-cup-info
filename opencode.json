@@ -1,14 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "envFile": ".env",
-  "mcpServers": {
-    "context7": {
-      "url": "https://mcp.context7.com/mcp",
-      "headers": {
-        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
-      }
-    }
-  },
   "agent": {
     "worldcup-data": {
       "description": "Expert on FIFA World Cup historical data (1930-2026). Answer questions about tournaments, champions, stats, and countries.",

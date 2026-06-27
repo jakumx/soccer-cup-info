@@ -3,6 +3,7 @@ import WorldMap from './components/WorldMap'
 import WorldMapTooltip from './components/WorldMapTooltip'
 import ColorLegend from './components/ColorLegend'
 import ChampionsList from './components/ChampionsList'
+import WorldCupHistory from './components/WorldCupHistory'
 import type { TooltipData } from './types'
 
 function App() {
@@ -46,6 +47,10 @@ function App() {
 
         <div className="mt-10">
           <ChampionsList />
+        </div>
+
+        <div className="mt-10">
+          <WorldCupHistory />
         </div>
       </main>
 
