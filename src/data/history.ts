@@ -1,8 +1,4 @@
-export interface HistoryEvent {
-  year: number
-  title: string
-  description: string
-}
+import type { HistoryEvent } from '../types'
 
 export const fifaHistory: HistoryEvent[] = [
   {

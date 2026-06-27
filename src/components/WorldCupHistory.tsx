@@ -1,14 +1,15 @@
 import { motion } from 'motion/react'
 import { fifaHistory, hostSelection } from '../data/history'
+import type { HistoryEvent } from '../types'
 
-function TimelineSection({ title, events }: { title: string; events: typeof fifaHistory }) {
+function TimelineSection({ title, events }: { title: string; events: HistoryEvent[] }) {
   return (
     <div className="mb-16">
       <h3 className="mb-8 text-center text-lg font-semibold text-neutral-700 dark:text-neutral-300">
         {title}
       </h3>
       <div className="relative">
-        <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-neutral-200 dark:bg-neutral-700 md:block" />
+        <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-neutral-200 dark:bg-neutral-700 md:block" aria-hidden />
         <div className="space-y-10">
           {events.map((event, i) => (
             <motion.div
@@ -39,7 +40,7 @@ function TimelineSection({ title, events }: { title: string; events: typeof fifa
                 </div>
               </div>
 
-              <div className="absolute left-1/2 top-6 hidden -translate-x-1/2 md:block">
+              <div className="absolute left-1/2 top-6 hidden -translate-x-1/2 md:block" aria-hidden>
                 <div className="size-3 rounded-full border-2 border-amber-400 bg-white dark:bg-neutral-900" />
               </div>
 

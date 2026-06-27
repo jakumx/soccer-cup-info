@@ -21,6 +21,7 @@
 
 ## Backlog 💡
 
+- **Estadísticas por edición** — al hacer clic en un torneo, mostrar datos detallados (grupos, goleadores).
 - **Línea de tiempo interactiva** — filtrar el mapa por rango de años (ej: 1930–1970).
-- **Modo comparativa** — dos países lado a lado.
+- **Modo comparativa** — seleccionar dos países y comparar sus historiales lado a lado.
 - **Data 2026** — actualizar con el Mundial 2026 cuando ocurra.

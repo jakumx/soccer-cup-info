@@ -46,6 +46,12 @@ export interface MapFeature {
   color: string
 }
 
+export interface HistoryEvent {
+  year: number
+  title: string
+  description: string
+}
+
 export interface TooltipData {
   name: string
   titles: number
