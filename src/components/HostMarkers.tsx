@@ -30,7 +30,7 @@ export default function HostMarkers({ features, pathGenerator }: HostMarkersProp
   }, [features])
 
   return (
-    <g pointerEvents="none">
+    <g>
       {hostCountries.map((host) => {
         const feature = featureMap.get(host.topoName)
         if (!feature) return null
@@ -52,6 +52,7 @@ export default function HostMarkers({ features, pathGenerator }: HostMarkersProp
               strokeWidth={2}
               className="animate-pulse"
               opacity={0.4}
+              pointerEvents="none"
             />
             <circle
               cx={centroid[0]}
@@ -60,7 +61,9 @@ export default function HostMarkers({ features, pathGenerator }: HostMarkersProp
               fill={color}
               stroke="white"
               strokeWidth={1.5}
-            />
+            >
+              <title>{`${host.country}: ${host.years.join(', ')}`}</title>
+            </circle>
           </g>
         )
       })}
