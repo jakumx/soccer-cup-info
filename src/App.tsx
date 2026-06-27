@@ -8,6 +8,7 @@ import YearSelector from './components/YearSelector'
 import TournamentDetails from './components/TournamentDetails'
 import { TimelineSection } from './components/WorldCupHistory'
 import TopScorers from './components/TopScorers'
+import Bracket from './components/Bracket'
 import { fifaHistory, hostSelection } from './data/history'
 import worldcupData from './data/worldcups.json'
 import type { TooltipData } from './types'
@@ -110,6 +111,12 @@ function App() {
                   <ColorLegend />
                 </div>
               </div>
+
+              {selectedTournament && (
+                <div className="my-6">
+                  <Bracket year={selectedYear} />
+                </div>
+              )}
 
               <div className="mt-4 grid gap-4 lg:grid-cols-2">
                 {selectedTournament && (
