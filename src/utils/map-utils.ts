@@ -23,7 +23,7 @@ for (const [topo, data] of Object.entries(topoNameToDataKey)) {
 }
 dataKeyToTopoName['West Germany'] = 'Germany'
 
-function getDataKey(featureName: string): string {
+export function getDataKey(featureName: string): string {
   return topoNameToDataKey[featureName] ?? featureName
 }
 
@@ -69,6 +69,7 @@ export function buildColorScale() {
 export function buildTooltipData(
   featureName: string,
   data: CountryData,
+  hostYears: number[],
   x: number,
   y: number
 ): TooltipData {
@@ -77,6 +78,7 @@ export function buildTooltipData(
     titles: data.titles,
     runnerUps: data.runnerUps,
     yearsWon: data.yearsWon,
+    hostYears,
     x,
     y,
   }
