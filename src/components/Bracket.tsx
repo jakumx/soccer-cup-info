@@ -44,23 +44,22 @@ export default function Bracket({ year }: BracketProps) {
   const layout = useMemo(() => {
     if (!numRounds) return null
 
-    const rev = [...rounds].reverse()
-    const fmc = rev[0].matches.length
-    const th = fmc * MATCH_H + (fmc - 1) * GAP
+    const firstN = rounds[0].matches.length
+    const th = firstN * MATCH_H + (firstN - 1) * GAP
     const cw = 200
     const xg = cw + GAP
     const w = numRounds * xg
     const h = th + MATCH_H
+    const pt = MATCH_H / 2
     const ls: Line[] = []
 
     for (let i = 0; i < numRounds - 1; i++) {
-      const leftN = 2 ** (numRounds - 1 - i)
+      const leftN = rounds[i].matches.length
       const pairN = leftN / 2
       const lx = i * xg + cw
       const ax = lx + ARM
       const rx = (i + 1) * xg
 
-      const pt = MATCH_H / 2
       for (let p = 0; p < pairN; p++) {
         const yE = pt + (2 * p + 0.5) * th / leftN
         const yO = pt + (2 * p + 1.5) * th / leftN
@@ -72,7 +71,7 @@ export default function Bracket({ year }: BracketProps) {
       }
     }
 
-    return { rev, th, cw, xg, w, h, ls, padTop: MATCH_H / 2 }
+    return { rounds, th, cw, xg, w, h, ls, pt }
   }, [rounds, numRounds])
 
   if (!layout) {
@@ -83,14 +82,11 @@ export default function Bracket({ year }: BracketProps) {
     )
   }
 
-  const { rev, th, cw, w, h, ls, padTop } = layout
+  const { rounds: rds, th, cw, w, h, ls, pt } = layout
 
   return (
     <div className="overflow-x-auto rounded-xl border border-neutral-200 bg-neutral-50 py-8 dark:border-neutral-700 dark:bg-neutral-900/50">
-      <div
-        className="relative mx-auto"
-        style={{ width: w, height: h }}
-      >
+      <div className="relative mx-auto" style={{ width: w, height: h }}>
         <svg
           className="absolute top-0 left-0 pointer-events-none"
           width={w}
@@ -110,14 +106,14 @@ export default function Bracket({ year }: BracketProps) {
         </svg>
 
         <div className="flex" style={{ gap: GAP }}>
-          {rev.map((round, i) => {
-            const matchCount = 2 ** (numRounds - 1 - i)
+          {rds.map((round) => {
+            const matchCount = round.matches.length
             const matchSpace = th / matchCount
 
             return (
               <div key={round.name} style={{ width: cw, position: 'relative' }}>
                 {round.matches.map((match, m) => {
-                  const top = padTop + m * matchSpace + (matchSpace - MATCH_H) / 2
+                  const top = pt + m * matchSpace + (matchSpace - MATCH_H) / 2
                   return (
                     <div
                       key={m}
