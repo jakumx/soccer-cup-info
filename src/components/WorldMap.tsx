@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useWorldMap } from '../hooks/useWorldMap'
 import { getCountryData, buildColorScale, buildTooltipData, getTopoName } from '../utils/map-utils'
+import HostMarkers from './HostMarkers'
 import type { TooltipData } from '../types'
 import type { Feature, Geometry } from 'geojson'
 
@@ -104,6 +105,7 @@ export default function WorldMap({
           pointerEvents="none"
         />
       )}
+      <HostMarkers features={features} pathGenerator={pathGenerator} />
     </svg>
   )
 }
