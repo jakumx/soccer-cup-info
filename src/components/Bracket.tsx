@@ -60,9 +60,10 @@ export default function Bracket({ year }: BracketProps) {
       const ax = lx + ARM
       const rx = (i + 1) * xg
 
+      const pt = MATCH_H / 2
       for (let p = 0; p < pairN; p++) {
-        const yE = (2 * p + 0.5) * th / leftN
-        const yO = (2 * p + 1.5) * th / leftN
+        const yE = pt + (2 * p + 0.5) * th / leftN
+        const yO = pt + (2 * p + 1.5) * th / leftN
         const yM = (yE + yO) / 2
         ls.push({ x1: lx, y1: yE, x2: ax, y2: yE })
         ls.push({ x1: lx, y1: yO, x2: ax, y2: yO })
@@ -71,7 +72,7 @@ export default function Bracket({ year }: BracketProps) {
       }
     }
 
-    return { rev, th, cw, xg, w, h, ls }
+    return { rev, th, cw, xg, w, h, ls, padTop: MATCH_H / 2 }
   }, [rounds, numRounds])
 
   if (!layout) {
@@ -82,7 +83,7 @@ export default function Bracket({ year }: BracketProps) {
     )
   }
 
-  const { rev, th, cw, w, h, ls } = layout
+  const { rev, th, cw, w, h, ls, padTop } = layout
 
   return (
     <div className="overflow-x-auto rounded-xl border border-neutral-200 bg-neutral-50 py-8 dark:border-neutral-700 dark:bg-neutral-900/50">
@@ -108,7 +109,7 @@ export default function Bracket({ year }: BracketProps) {
           ))}
         </svg>
 
-        <div className="flex" style={{ gap: GAP, paddingTop: MATCH_H / 2 }}>
+        <div className="flex" style={{ gap: GAP }}>
           {rev.map((round, i) => {
             const matchCount = 2 ** (numRounds - 1 - i)
             const matchSpace = th / matchCount
@@ -116,7 +117,7 @@ export default function Bracket({ year }: BracketProps) {
             return (
               <div key={round.name} style={{ width: cw, position: 'relative' }}>
                 {round.matches.map((match, m) => {
-                  const top = m * matchSpace + (matchSpace - MATCH_H) / 2
+                  const top = padTop + m * matchSpace + (matchSpace - MATCH_H) / 2
                   return (
                     <div
                       key={m}
