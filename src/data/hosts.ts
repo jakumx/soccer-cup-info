@@ -1,5 +1,5 @@
 import worldcupData from './worldcups.json'
-import { getTopoName } from '../utils/map-utils'
+import { getTopoName, getDataKey } from '../utils/map-utils'
 
 export interface HostInfo {
   country: string
@@ -19,8 +19,9 @@ for (const t of worldcupData.tournaments) {
   }
 }
 
-export function getHostYears(country: string): number[] {
-  return hostMap.get(country) ?? []
+export function getHostYears(featureName: string): number[] {
+  const key = getDataKey(featureName)
+  return hostMap.get(key) ?? []
 }
 
 export const hostCountries: HostInfo[] = Array.from(hostMap.entries())

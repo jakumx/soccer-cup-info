@@ -23,7 +23,7 @@ for (const [topo, data] of Object.entries(topoNameToDataKey)) {
 }
 dataKeyToTopoName['West Germany'] = 'Germany'
 
-function getDataKey(featureName: string): string {
+export function getDataKey(featureName: string): string {
   return topoNameToDataKey[featureName] ?? featureName
 }
 
