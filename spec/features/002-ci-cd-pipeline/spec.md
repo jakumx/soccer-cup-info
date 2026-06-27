@@ -12,11 +12,11 @@ Automatizar la calidad del código y el despliegue elimina errores humanos y ace
 
 ## Criterios de aceptación
 
-- [x] Al abrir un PR a `main`, se ejecuta `ci.yml` (oxlint + tsc + build).
-- [x] Al abrir un PR a `main`, opencode revisa el diff y comenta en el PR.
-- [x] Al hacer merge a `main`, Amplify detecta el push y hace deploy automático.
-- [x] Al hacer merge a `main`, se crea un tag semántico y GitHub Release con changelog.
-- [x] Los mensajes de commit deben seguir conventional commits (validado por husky + commitlint).
+- [ ] Al abrir un PR a `main`, se ejecuta `ci.yml` (oxlint + tsc + build).
+- [ ] Al abrir un PR a `main`, opencode revisa el diff y comenta en el PR.
+- [ ] Al hacer merge a `main`, Amplify detecta el push y hace deploy automático.
+- [ ] Al hacer merge a `main`, se crea un tag semántico y GitHub Release con changelog.
+- [ ] Los mensajes de commit deben seguir conventional commits (validado por husky + commitlint).
 
 ## Fuera de alcance
 
