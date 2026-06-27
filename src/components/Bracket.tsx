@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { getKnockout } from '../data/knockout'
 import type { BracketRound } from '../data/knockout'
 
@@ -6,51 +6,34 @@ interface BracketProps {
   year: number | null
 }
 
-const MATCH_H = 68
-const GAP = 24
-const ARM = 10
+const MATCH_H = 80
+const GAP = 32
+const ARM = 16
 
 function MatchBox({ team1, team2, score1, score2, pen }: {
-  team1: string
-  team2: string
-  score1: number
-  score2: number
-  pen?: string
+  team1: string; team2: string; score1: number; score2: number; pen?: string
 }) {
   return (
-    <div className="w-full rounded-md border border-neutral-300 bg-white text-xs dark:border-neutral-600 dark:bg-neutral-800">
-      <div className="flex items-center justify-between px-2.5 py-1.5 text-neutral-700 dark:text-neutral-300">
-        <span className="truncate">{team1}</span>
-        <span className="ml-2 shrink-0 tabular-nums">{score1}{pen ? ` (${pen.split('-')[0]})` : ''}</span>
+    <div className="w-full rounded-lg border border-neutral-300 bg-white text-sm dark:border-neutral-600 dark:bg-neutral-800">
+      <div className="flex items-center justify-between px-3 py-2 text-neutral-700 dark:text-neutral-300">
+        <span className="truncate font-medium">{team1}</span>
+        <span className="ml-3 shrink-0 tabular-nums font-semibold">
+          {score1}{pen ? ` (${pen.split('-')[0]})` : ''}
+        </span>
       </div>
-      <div className="flex items-center justify-between border-t border-neutral-200 px-2.5 py-1.5 dark:border-neutral-700">
+      <div className="flex items-center justify-between border-t border-neutral-200 px-3 py-2 dark:border-neutral-700">
         <span className="truncate text-neutral-700 dark:text-neutral-300">{team2}</span>
-        <span className="ml-2 shrink-0 tabular-nums">{score2}{pen ? ` (${pen.split('-')[1]})` : ''}</span>
+        <span className="ml-3 shrink-0 tabular-nums font-semibold">
+          {score2}{pen ? ` (${pen.split('-')[1]})` : ''}
+        </span>
       </div>
     </div>
   )
 }
 
-interface Line {
-  x1: number
-  y1: number
-  x2: number
-  y2: number
-}
+interface Line { x1: number; y1: number; x2: number; y2: number }
 
 export default function Bracket({ year }: BracketProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [containerWidth, setContainerWidth] = useState(0)
-
-  useEffect(() => {
-    if (!containerRef.current) return
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) setContainerWidth(entry.contentRect.width)
-    })
-    observer.observe(containerRef.current)
-    return () => observer.disconnect()
-  }, [])
-
   const rounds: BracketRound[] = useMemo(() => {
     if (!year) return []
     return getKnockout(year)
@@ -58,84 +41,86 @@ export default function Bracket({ year }: BracketProps) {
 
   const numRounds = rounds.length
 
-  const { reversed, totalHeight, colWidth, xGap, lines } = useMemo(() => {
-    if (!numRounds) return { reversed: [] as BracketRound[], totalHeight: 0, colWidth: 0, xGap: 0, lines: [] as Line[] }
+  const layout = useMemo(() => {
+    if (!numRounds) return null
+
     const rev = [...rounds].reverse()
     const fmc = rev[0].matches.length
     const th = fmc * MATCH_H + (fmc - 1) * GAP
-    const cw = Math.max(140, (Math.min(containerWidth || 900, 1100) - GAP * (numRounds - 1)) / numRounds)
+    const cw = 200
     const xg = cw + GAP
+    const w = numRounds * xg
+    const h = th + MATCH_H
     const ls: Line[] = []
 
     for (let i = 0; i < numRounds - 1; i++) {
       const leftN = 2 ** (numRounds - 1 - i)
       const pairN = leftN / 2
       const lx = i * xg + cw
-      const rx = (i + 1) * xg
       const ax = lx + ARM
+      const rx = (i + 1) * xg
 
       for (let p = 0; p < pairN; p++) {
-        const yEven = (2 * p + 0.5) * th / leftN
-        const yOdd = (2 * p + 1.5) * th / leftN
-        const yMid = (yEven + yOdd) / 2
-        ls.push({ x1: lx, y1: yEven, x2: ax, y2: yEven })
-        ls.push({ x1: lx, y1: yOdd, x2: ax, y2: yOdd })
-        ls.push({ x1: ax, y1: yEven, x2: ax, y2: yOdd })
-        ls.push({ x1: ax, y1: yMid, x2: rx, y2: yMid })
+        const yE = (2 * p + 0.5) * th / leftN
+        const yO = (2 * p + 1.5) * th / leftN
+        const yM = (yE + yO) / 2
+        ls.push({ x1: lx, y1: yE, x2: ax, y2: yE })
+        ls.push({ x1: lx, y1: yO, x2: ax, y2: yO })
+        ls.push({ x1: ax, y1: yE, x2: ax, y2: yO })
+        ls.push({ x1: ax, y1: yM, x2: rx, y2: yM })
       }
     }
 
-    return { reversed: rev, totalHeight: th, colWidth: cw, xGap: xg, lines: ls }
-  }, [rounds, numRounds, containerWidth])
+    return { rev, th, cw, xg, w, h, ls }
+  }, [rounds, numRounds])
 
-  if (!numRounds) {
+  if (!layout) {
     return (
-      <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-6 text-center text-sm text-neutral-400 dark:border-neutral-700 dark:bg-neutral-900/50">
+      <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-8 text-center text-sm text-neutral-400 dark:border-neutral-700 dark:bg-neutral-900/50">
         Formato de grupo, sin cuadro de eliminatorias disponibles
       </div>
     )
   }
 
+  const { rev, th, cw, w, h, ls } = layout
+
   return (
-    <div className="overflow-x-auto rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-900/50">
+    <div className="overflow-x-auto rounded-xl border border-neutral-200 bg-neutral-50 py-8 dark:border-neutral-700 dark:bg-neutral-900/50">
       <div
-        ref={containerRef}
-        className="relative"
-        style={{ height: totalHeight + MATCH_H / 2, minWidth: numRounds * xGap }}
+        className="relative mx-auto"
+        style={{ width: w, height: h }}
       >
         <svg
-          className="absolute inset-0 pointer-events-none"
-          width={numRounds * xGap}
-          height={totalHeight + MATCH_H / 2}
+          className="absolute top-0 left-0 pointer-events-none"
+          width={w}
+          height={h}
         >
-          {lines.map((line, i) => (
+          {ls.map((line, i) => (
             <line
               key={i}
               x1={line.x1}
               y1={line.y1}
               x2={line.x2}
               y2={line.y2}
-              stroke="#a3a3a3"
-              strokeWidth={1.5}
-              className="dark:stroke-neutral-600"
+              stroke="#737373"
+              strokeWidth={2}
             />
           ))}
         </svg>
 
-        <div className="flex" style={{ gap: GAP }}>
-          {reversed.map((round, i) => {
+        <div className="flex" style={{ gap: GAP, paddingTop: MATCH_H / 2 }}>
+          {rev.map((round, i) => {
             const matchCount = 2 ** (numRounds - 1 - i)
-            const matchSpace = totalHeight / matchCount
+            const matchSpace = th / matchCount
 
             return (
-              <div key={round.name} className="relative flex-col" style={{ width: colWidth }}>
+              <div key={round.name} style={{ width: cw, position: 'relative' }}>
                 {round.matches.map((match, m) => {
                   const top = m * matchSpace + (matchSpace - MATCH_H) / 2
                   return (
                     <div
                       key={m}
-                      className="absolute"
-                      style={{ width: colWidth, top, left: 0 }}
+                      style={{ position: 'absolute', width: cw, top, left: 0 }}
                     >
                       <MatchBox
                         team1={match.team1}
