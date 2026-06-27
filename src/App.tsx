@@ -16,6 +16,13 @@ const tabs = [
 
 type TabId = (typeof tabs)[number]['id']
 
+const tabAnimation = {
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+  transition: { duration: 0.2 },
+}
+
 function App() {
   const [activeTab, setActiveTab] = useState<TabId>('map')
   const [tooltipData, setTooltipData] = useState<TooltipData | null>(null)
@@ -25,6 +32,7 @@ function App() {
   }, [])
 
   const handleCountryClick = useCallback((countryName: string, code: string) => {
+    // TODO: abrir modal con detalle del país
     console.log(`Clicked: ${countryName} (${code})`)
   }, [])
 
@@ -39,10 +47,13 @@ function App() {
         </p>
       </header>
 
-      <nav className="mx-auto mt-4 flex max-w-md gap-1 rounded-xl border border-neutral-200 bg-neutral-100 p-1 dark:border-neutral-800 dark:bg-neutral-900">
+      <nav className="mx-auto mt-4 flex max-w-md gap-1 rounded-xl border border-neutral-200 bg-neutral-100 p-1 dark:border-neutral-800 dark:bg-neutral-900" role="tablist">
         {tabs.map((tab) => (
           <button
             key={tab.id}
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            aria-controls={`panel-${tab.id}`}
             onClick={() => setActiveTab(tab.id)}
             className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === tab.id
@@ -60,10 +71,10 @@ function App() {
           {activeTab === 'map' && (
             <motion.div
               key="map"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
+              {...tabAnimation}
+              role="tabpanel"
+              id="panel-map"
+              aria-labelledby="tab-map"
             >
               <div className="relative">
                 <div className="rounded-xl border border-neutral-200 bg-white p-2 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
@@ -90,10 +101,10 @@ function App() {
           {activeTab === 'history' && (
             <motion.div
               key="history"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
+              {...tabAnimation}
+              role="tabpanel"
+              id="panel-history"
+              aria-labelledby="tab-history"
               className="rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-900"
             >
               <h2 className="mb-2 text-center text-2xl font-bold text-neutral-900 dark:text-white">
@@ -110,10 +121,10 @@ function App() {
           {activeTab === 'hosts' && (
             <motion.div
               key="hosts"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
+              {...tabAnimation}
+              role="tabpanel"
+              id="panel-hosts"
+              aria-labelledby="tab-hosts"
               className="rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-900"
             >
               <h2 className="mb-2 text-center text-2xl font-bold text-neutral-900 dark:text-white">
