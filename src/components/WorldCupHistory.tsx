@@ -1,13 +1,14 @@
 import { motion } from 'motion/react'
-import { fifaHistory, hostSelection } from '../data/history'
 import type { HistoryEvent } from '../types'
 
-function TimelineSection({ title, events }: { title: string; events: HistoryEvent[] }) {
+export function TimelineSection({ title, events }: { title?: string; events: HistoryEvent[] }) {
   return (
-    <div className="mb-16">
-      <h3 className="mb-8 text-center text-lg font-semibold text-neutral-700 dark:text-neutral-300">
-        {title}
-      </h3>
+    <div>
+      {title && (
+        <h3 className="mb-8 text-center text-lg font-semibold text-neutral-700 dark:text-neutral-300">
+          {title}
+        </h3>
+      )}
       <div className="relative">
         <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-neutral-200 dark:bg-neutral-700 md:block" aria-hidden />
         <div className="space-y-10">
@@ -53,19 +54,4 @@ function TimelineSection({ title, events }: { title: string; events: HistoryEven
   )
 }
 
-export default function WorldCupHistory() {
-  return (
-    <section className="rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-900">
-      <h2 className="mb-2 text-center text-2xl font-bold text-neutral-900 dark:text-white">
-        Historia de la Copa del Mundo
-      </h2>
-      <p className="mb-10 text-center text-sm text-neutral-500 dark:text-neutral-400">
-        Desde la fundación de la FIFA hasta el Mundial de 48 equipos — la evolución del torneo
-        más importante del fútbol.
-      </p>
 
-      <TimelineSection title="Origen y evolución del torneo" events={fifaHistory} />
-      <TimelineSection title="¿Cómo se elige la sede?" events={hostSelection} />
-    </section>
-  )
-}

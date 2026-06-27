@@ -19,8 +19,7 @@
     "world-atlas": "^2.0.2"
   },
   "lint-staged": {
-    "*.{ts,tsx}": ["oxlint --fix", "tsc --noEmit"],
-    "*.{json,css,md}": ["oxlint --fix"]
+    "*.{ts,tsx}": ["oxlint --fix", "tsc --noEmit"]
   },
   "devDependencies": {
     "@commitlint/cli": "^21.1.0",
