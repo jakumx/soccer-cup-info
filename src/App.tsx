@@ -7,6 +7,7 @@ import ChampionsList from './components/ChampionsList'
 import YearSelector from './components/YearSelector'
 import TournamentDetails from './components/TournamentDetails'
 import { TimelineSection } from './components/WorldCupHistory'
+import TopScorers from './components/TopScorers'
 import { fifaHistory, hostSelection } from './data/history'
 import worldcupData from './data/worldcups.json'
 import type { TooltipData } from './types'
@@ -15,6 +16,7 @@ const tabs = [
   { id: 'map', label: 'Mapa' },
   { id: 'history', label: 'Historia' },
   { id: 'hosts', label: 'Sedes' },
+  { id: 'scorers', label: 'Goleadores' },
 ] as const
 
 type TabId = (typeof tabs)[number]['id']
@@ -155,6 +157,18 @@ function App() {
                 informal hasta el sistema de votación actual.
               </p>
               <TimelineSection events={hostSelection} />
+            </motion.div>
+          )}
+
+          {activeTab === 'scorers' && (
+            <motion.div
+              key="scorers"
+              {...tabAnimation}
+              role="tabpanel"
+              id="panel-scorers"
+              aria-labelledby="tab-scorers"
+            >
+              <TopScorers selectedYear={selectedYear} onYearSelect={handleYearSelect} />
             </motion.div>
           )}
         </AnimatePresence>
