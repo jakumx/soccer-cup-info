@@ -1,32 +1,54 @@
-# React + TypeScript + Vite
+# SoccerCupInfo
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Mapa histórico interactivo de campeones de la Copa del Mundo FIFA (1930–2026).
 
-Currently, two official plugins are available:
+Explora qué países han ganado más Mundiales, navega por la historia del torneo y descubre cómo se eligen las sedes.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Funcionalidades
 
-## React Compiler
+- **Mapa coroplético** — países coloreados según número de títulos, con tooltip interactivo.
+- **Línea de tiempo** — hitos históricos desde la fundación de la FIFA (1904) hasta el Mundial de 48 equipos (2026).
+- **Sedes** — evolución del proceso de elección de países anfitriones.
+- **Ranking de campeones** — lista completa con medallas y años ganados.
+- **Dark mode** — tema claro/oscuro automático.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack
 
-## Expanding the Oxlint configuration
+| Tecnología | Uso |
+|---|---|
+| React 19 + TypeScript | UI |
+| Vite 8 | Build tool |
+| D3.js (d3-geo, d3-scale) | Mapa y escalas |
+| topoJSON (world-atlas) | Datos geográficos |
+| Tailwind CSS v4 | Estilos |
+| Motion | Animaciones |
+| AWS Amplify | Hosting (auto-deploy desde main) |
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Desarrollo
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm run dev      # Servidor de desarrollo
+npm run build    # Build producción (tsc + vite build)
+npm run preview  # Previsualizar build
+npm run lint     # Oxlint
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Arquitectura
+
+```
+src/
+├── components/       # WorldMap, WorldMapTooltip, ColorLegend, ChampionsList, WorldCupHistory
+├── hooks/            # useWorldMap
+├── data/             # worldcups.json, history.ts
+├── utils/            # map-utils.ts
+├── types/            # Tipos TypeScript
+└── styles/           # Tailwind + theme tokens
+```
+
+## Live
+
+https://main.d3fqy4hkou1lii.amplifyapp.com/
+
+## Licencia
+
+MIT
