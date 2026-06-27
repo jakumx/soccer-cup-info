@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { getKnockout } from '../data/knockout'
-import type { BracketData } from '../data/knockout'
+import type { BracketData, BracketMatch } from '../data/knockout'
 
 interface BracketProps {
   year: number | null
@@ -10,22 +10,47 @@ const MATCH_H = 80
 const GAP = 32
 const ARM = 16
 
-function MatchBox({ team1, team2, score1, score2, pen }: {
-  team1: string; team2: string; score1: number; score2: number; pen?: string
-}) {
+function getWinner(m: BracketMatch): 'team1' | 'team2' {
+  if (m.score1 > m.score2) return 'team1'
+  if (m.score2 > m.score1) return 'team2'
+  if (m.pen) {
+    const [a, b] = m.pen.split('-').map(Number)
+    return a > b ? 'team1' : 'team2'
+  }
+  return 'team1'
+}
+
+function MatchBox({ team1, team2, score1, score2, pen }: BracketMatch) {
+  const winner = getWinner({ team1, team2, score1, score2, pen })
   return (
     <div className="w-full rounded-lg border border-neutral-300 bg-white text-sm dark:border-neutral-600 dark:bg-neutral-800">
-      <div className="flex items-center justify-between px-3 py-2 text-neutral-700 dark:text-neutral-300">
-        <span className="truncate font-medium">{team1}</span>
+      <div className={`flex items-center justify-between px-3 py-2 ${winner === 'team1' ? 'font-bold text-neutral-900 dark:text-white' : 'text-neutral-700 dark:text-neutral-300'}`}>
+        <span className="truncate">{team1}</span>
         <span className="ml-3 shrink-0 tabular-nums font-semibold">
-          {score1}{pen ? ` (${pen.split('-')[0]})` : ''}
+          {score1}{pen && winner === 'team1' ? ` (${pen.split('-')[0]})` : ''}
         </span>
       </div>
-      <div className="flex items-center justify-between border-t border-neutral-200 px-3 py-2 dark:border-neutral-700">
-        <span className="truncate text-neutral-700 dark:text-neutral-300">{team2}</span>
+      <div className={`flex items-center justify-between border-t border-neutral-200 px-3 py-2 dark:border-neutral-700 ${winner === 'team2' ? 'font-bold text-neutral-900 dark:text-white' : 'text-neutral-700 dark:text-neutral-300'}`}>
+        <span className="truncate">{team2}</span>
         <span className="ml-3 shrink-0 tabular-nums font-semibold">
-          {score2}{pen ? ` (${pen.split('-')[1]})` : ''}
+          {score2}{pen && winner === 'team2' ? ` (${pen.split('-')[1]})` : ''}
         </span>
+      </div>
+    </div>
+  )
+}
+
+function GroupMatchCard({ team1, team2, score1, score2, pen }: BracketMatch) {
+  const winner = getWinner({ team1, team2, score1, score2, pen })
+  return (
+    <div className="rounded-lg border border-neutral-300 bg-white text-sm dark:border-neutral-600 dark:bg-neutral-800">
+      <div className={`flex items-center justify-between px-3 py-2 ${winner === 'team1' ? 'font-bold text-neutral-900 dark:text-white' : 'text-neutral-700 dark:text-neutral-300'}`}>
+        <span className="truncate">{team1}</span>
+        <span className="ml-3 shrink-0 tabular-nums font-semibold">{score1}</span>
+      </div>
+      <div className={`flex items-center justify-between border-t border-neutral-200 px-3 py-2 dark:border-neutral-700 ${winner === 'team2' ? 'font-bold text-neutral-900 dark:text-white' : 'text-neutral-700 dark:text-neutral-300'}`}>
+        <span className="truncate">{team2}</span>
+        <span className="ml-3 shrink-0 tabular-nums font-semibold">{score2}</span>
       </div>
     </div>
   )
@@ -100,16 +125,7 @@ export default function Bracket({ year }: BracketProps) {
         <div className="p-6">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {rounds[0]?.matches.map((m, i) => (
-              <div key={i} className="rounded-lg border border-neutral-300 bg-white text-sm dark:border-neutral-600 dark:bg-neutral-800">
-                <div className="flex items-center justify-between px-3 py-2 text-neutral-700 dark:text-neutral-300">
-                  <span className="truncate font-medium">{m.team1}</span>
-                  <span className="ml-3 shrink-0 tabular-nums font-semibold">{m.score1}</span>
-                </div>
-                <div className="flex items-center justify-between border-t border-neutral-200 px-3 py-2 dark:border-neutral-700">
-                  <span className="truncate text-neutral-700 dark:text-neutral-300">{m.team2}</span>
-                  <span className="ml-3 shrink-0 tabular-nums font-semibold">{m.score2}</span>
-                </div>
-              </div>
+              <GroupMatchCard key={i} {...m} />
             ))}
           </div>
         </div>
