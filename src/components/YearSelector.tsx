@@ -23,6 +23,7 @@ export default function YearSelector({ selected, onSelect }: YearSelectorProps) 
           return (
             <button
               key={t.year}
+              aria-pressed={isSelected}
               onClick={() => onSelect(t.year)}
               className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                 isSelected

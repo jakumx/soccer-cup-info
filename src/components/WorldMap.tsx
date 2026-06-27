@@ -23,10 +23,10 @@ export default function WorldMap({
 
   const colorScale = useMemo(() => buildColorScale(), [])
   const maxTitles = useMemo(() => colorScale.domain().length - 1, [colorScale])
-  const highlightTopoName = useMemo(
-    () => (highlightedCountry ? getTopoName(highlightedCountry) : null),
-    [highlightedCountry]
-  )
+  const highlightTopoName = useMemo(() => {
+    if (!highlightedCountry || highlightedCountry.includes('/')) return null
+    return getTopoName(highlightedCountry)
+  }, [highlightedCountry])
 
   if (loading) {
     return (

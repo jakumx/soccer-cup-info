@@ -21,6 +21,7 @@ const dataKeyToTopoName: Record<string, string> = {}
 for (const [topo, data] of Object.entries(topoNameToDataKey)) {
   dataKeyToTopoName[data] = topo
 }
+dataKeyToTopoName['West Germany'] = 'Germany'
 
 function getDataKey(featureName: string): string {
   return topoNameToDataKey[featureName] ?? featureName
