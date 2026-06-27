@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useWorldMap } from '../hooks/useWorldMap'
-import { getCountryData, getHostYears, buildColorScale, buildTooltipData, getTopoName } from '../utils/map-utils'
+import { getCountryData, buildColorScale, buildTooltipData, getTopoName } from '../utils/map-utils'
+import { getHostYears } from '../data/hosts'
 import HostMarkers from './HostMarkers'
 import type { TooltipData } from '../types'
 import type { Feature, Geometry } from 'geojson'

@@ -31,20 +31,6 @@ export function getTopoName(dataCountryName: string): string {
   return dataKeyToTopoName[dataCountryName] ?? dataCountryName
 }
 
-const hostYearsMap = new Map<string, number[]>()
-for (const t of worldcupData.tournaments) {
-  const parts = t.host.split(' / ')
-  for (const h of parts) {
-    const existing = hostYearsMap.get(h) ?? []
-    existing.push(t.year)
-    hostYearsMap.set(h, existing)
-  }
-}
-
-export function getHostYears(dataKey: string): number[] {
-  return hostYearsMap.get(dataKey) ?? []
-}
-
 export function getCountryData(featureName: string): CountryData {
   const dataKey = getDataKey(featureName)
   const entry = worldcupData.countries[dataKey as keyof typeof worldcupData.countries]

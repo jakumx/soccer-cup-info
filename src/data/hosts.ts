@@ -19,6 +19,10 @@ for (const t of worldcupData.tournaments) {
   }
 }
 
+export function getHostYears(country: string): number[] {
+  return hostMap.get(country) ?? []
+}
+
 export const hostCountries: HostInfo[] = Array.from(hostMap.entries())
   .map(([country, years]) => ({
     country,
