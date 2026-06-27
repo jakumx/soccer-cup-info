@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useWorldMap } from '../hooks/useWorldMap'
-import { getCountryData, buildColorScale, buildTooltipData } from '../utils/map-utils'
+import { getCountryData, buildColorScale, buildTooltipData, getTopoName } from '../utils/map-utils'
 import type { TooltipData } from '../types'
 import type { Feature, Geometry } from 'geojson'
 
@@ -9,6 +9,7 @@ interface WorldMapProps {
   height?: number
   onCountryHover?: (data: TooltipData | null) => void
   onCountryClick?: (countryName: string, code: string) => void
+  highlightedCountry?: string | null
 }
 
 export default function WorldMap({
@@ -16,11 +17,16 @@ export default function WorldMap({
   height = 600,
   onCountryHover,
   onCountryClick,
+  highlightedCountry,
 }: WorldMapProps) {
   const { renderData, loading, error } = useWorldMap({ width, height })
 
   const colorScale = useMemo(() => buildColorScale(), [])
   const maxTitles = useMemo(() => colorScale.domain().length - 1, [colorScale])
+  const highlightTopoName = useMemo(
+    () => (highlightedCountry ? getTopoName(highlightedCountry) : null),
+    [highlightedCountry]
+  )
 
   if (loading) {
     return (
@@ -69,13 +75,18 @@ export default function WorldMap({
           const strokeW = countryData.titles > 0 ? 1.5 : 0.5
           const strokeC = countryData.titles > 0 ? '#1a1a1a' : '#ccc'
 
+          const isHighlighted = highlightTopoName === name
+          const finalStroke = isHighlighted ? '#f59e0b' : strokeC
+          const finalStrokeW = isHighlighted ? 3 : strokeW
+          const finalFill = isHighlighted ? '#fcd34d' : fill
+
           return (
             <path
               key={feature.id ?? name}
               d={pathGenerator(feature) ?? undefined}
-              fill={fill}
-              stroke={strokeC}
-              strokeWidth={strokeW}
+              fill={finalFill}
+              stroke={finalStroke}
+              strokeWidth={finalStrokeW}
               className="cursor-pointer transition-opacity hover:opacity-80"
               onMouseEnter={(e) => handleMouseEnter(name, e.nativeEvent)}
               onMouseLeave={handleMouseLeave}
