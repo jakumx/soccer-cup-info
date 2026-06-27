@@ -4,13 +4,14 @@
 
 1. **001 · Mapa mundial interactivo** — mapa coroplético D3 con tooltip, leyenda y lista de campeones.
 2. **002 · CI/CD pipeline** — lint + typecheck + code review automático en PRs, deploy a Amplify, tags y releases.
+3. **003 · Historia del Mundial** — sección informativa con tabs: mapa, línea de tiempo histórica y proceso de elección de sede.
 
 ## v1 — Portada (lanzamiento inicial) 🚀
 
 - [x] Mapa coroplético D3 con tooltip
 - [x] Leyenda de colores
 - [x] Lista de campeones
-- [ ] **003 · Historia del Mundial** — sección informativa sobre el origen de la FIFA, cómo se eligen las sedes y evolución del torneo.
+- [x] **003 · Historia del Mundial** — sección informativa sobre el origen de la FIFA, cómo se eligen las sedes y evolución del torneo.
 
 ## v2 — Explorador por Edición 🔜
 

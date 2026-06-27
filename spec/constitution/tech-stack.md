@@ -13,13 +13,16 @@
 ## Archivos / módulos clave
 
 - `src/data/worldcups.json` — datos históricos completos (22 torneos, 1930–2022).
+- `src/data/history.ts` — hitos históricos de la FIFA y proceso de elección de sedes.
 - `src/components/WorldMap.tsx` — mapa coroplético D3.
 - `src/components/WorldMapTooltip.tsx` — tooltip interactivo animado.
 - `src/components/ColorLegend.tsx` — leyenda de la escala de color.
+- `src/components/ChampionsList.tsx` — ranking de países campeones.
+- `src/components/WorldCupHistory.tsx` — componente `TimelineSection` para línea de tiempo.
 - `src/hooks/useWorldMap.ts` — carga de topoJSON y proyección D3.
 - `src/utils/map-utils.ts` — escalas de color, lookup de países, helpers.
 - `public/countries-110m.json` — topoJSON del mundo (desde `world-atlas`).
-- `opencode.json` — configuración de opencode (MCP, agents, skills).
+- `opencode.json` — configuración de opencode (agents, skills).
 
 ## Comandos
 
