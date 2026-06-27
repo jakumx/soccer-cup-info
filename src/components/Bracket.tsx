@@ -1,94 +1,170 @@
-import worldcupData from '../data/worldcups.json'
+import { useMemo, useRef, useEffect, useState } from 'react'
 import { getKnockout } from '../data/knockout'
+import type { BracketRound } from '../data/knockout'
 
 interface BracketProps {
   year: number | null
 }
 
+const MATCH_H = 68
+const COL_W = 180
+const GAP = 24
+
 function MatchBox({ team1, team2, score1, score2, pen, winner }: {
   team1: string
   team2: string
-  score1?: number
-  score2?: number
+  score1: number
+  score2: number
   pen?: string
   winner?: string
 }) {
   return (
-    <div className="w-48 rounded-lg border border-neutral-200 bg-white text-sm dark:border-neutral-700 dark:bg-neutral-900">
-      <div className={`flex items-center justify-between px-3 py-1.5 ${team1 === winner ? 'font-bold text-green-600 dark:text-green-400' : 'text-neutral-700 dark:text-neutral-300'}`}>
+    <div className="w-full rounded-md border border-neutral-300 bg-white text-xs dark:border-neutral-600 dark:bg-neutral-800">
+      <div className={`flex items-center justify-between px-2.5 py-1.5 ${team1 === winner ? 'font-semibold text-green-600 dark:text-green-400' : 'text-neutral-700 dark:text-neutral-300'}`}>
         <span className="truncate">{team1}</span>
-        {score1 !== undefined && <span className="ml-2 shrink-0">{score1}{pen && team1 === winner ? ` (${pen.split('-')[0]})` : ''}</span>}
+        <span className="ml-2 shrink-0 tabular-nums">{score1}{pen && team1 === winner ? ` (${pen.split('-')[0]})` : ''}</span>
       </div>
-      <div className={`border-t border-neutral-100 flex items-center justify-between px-3 py-1.5 dark:border-neutral-800 ${team2 === winner ? 'font-bold text-green-600 dark:text-green-400' : 'text-neutral-700 dark:text-neutral-300'}`}>
+      <div className={`flex items-center justify-between border-t border-neutral-200 px-2.5 py-1.5 dark:border-neutral-700 ${team2 === winner ? 'font-semibold text-green-600 dark:text-green-400' : 'text-neutral-700 dark:text-neutral-300'}`}>
         <span className="truncate">{team2}</span>
-        {score2 !== undefined && <span className="ml-2 shrink-0">{score2}{pen && team2 === winner ? ` (${pen.split('-')[1]})` : ''}</span>}
+        <span className="ml-2 shrink-0 tabular-nums">{score2}{pen && team2 === winner ? ` (${pen.split('-')[1]})` : ''}</span>
       </div>
-      {pen && (
-        <div className="border-t border-neutral-100 px-3 py-1 text-center text-xs text-neutral-400 dark:border-neutral-800">
-          Penales: {pen}
-        </div>
-      )}
     </div>
   )
 }
 
+interface Connection {
+  x1: number
+  y1: number
+  x2: number
+  y2: number
+}
+
 export default function Bracket({ year }: BracketProps) {
-  if (!year) return null
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [containerWidth, setContainerWidth] = useState(0)
 
-  const t = worldcupData.tournaments.find((t) => t.year === year)
-  if (!t) return null
+  const rounds: BracketRound[] = useMemo(() => {
+    if (!year) return []
+    return getKnockout(year)
+  }, [year])
 
-  const semis = getKnockout(year)
+  const numRounds = rounds.length
+
+  const firstRoundMatches = useMemo(() => {
+    if (!numRounds) return 0
+    return rounds[numRounds - 1].matches.length
+  }, [rounds, numRounds])
+
+  const totalHeight = useMemo(() => {
+    if (!firstRoundMatches) return 0
+    return firstRoundMatches * MATCH_H + (firstRoundMatches - 1) * GAP
+  }, [firstRoundMatches])
+
+  const connections: Connection[] = useMemo(() => {
+    if (!numRounds || !totalHeight) return []
+    const result: Connection[] = []
+    const xGap = COL_W + GAP
+
+    for (let r = 0; r < numRounds - 1; r++) {
+      const matchesR = 2 ** r
+      const matchesR1 = 2 ** (r + 1)
+      const leftX = (numRounds - 1 - r) * xGap + COL_W
+      const rightX = (numRounds - 2 - r) * xGap
+
+      for (let m = 0; m < matchesR; m++) {
+        const yLeft = (m + 0.5) * totalHeight / matchesR
+        const yRight0 = (2 * m + 0.5) * totalHeight / matchesR1
+        const yRight1 = (2 * m + 1.5) * totalHeight / matchesR1
+
+        result.push({ x1: leftX, y1: yLeft, x2: rightX, y2: yRight0 })
+        result.push({ x1: leftX + GAP, y1: yRight0, x2: leftX + GAP, y2: yRight1 })
+        result.push({ x1: leftX, y1: yRight1, x2: rightX, y2: yRight1 })
+      }
+    }
+    return result
+  }, [numRounds, totalHeight])
+
+  useEffect(() => {
+    if (!containerRef.current) return
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerWidth(entry.contentRect.width)
+      }
+    })
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [])
+
+  if (!rounds.length) {
+    return (
+      <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-6 text-center text-sm text-neutral-400 dark:border-neutral-700 dark:bg-neutral-900/50">
+        Formato de grupo, sin cuadro de eliminatorias
+      </div>
+    )
+  }
+
+  const colWidth = Math.max(140, (Math.min(containerWidth, 1100) - GAP * (numRounds - 1)) / numRounds)
 
   return (
-    <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-700 dark:bg-neutral-900/50">
-      <div className="flex flex-col items-center gap-4 md:flex-row md:items-start md:justify-center md:gap-8">
-        <div className="space-y-3">
-          <p className="text-center text-xs font-semibold uppercase tracking-wider text-neutral-400">
-            Semifinales
-          </p>
-          {semis.length > 0 ? semis.map((m, i) => (
-            <MatchBox
+    <div className="overflow-x-auto rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-900/50">
+      <div
+        ref={containerRef}
+        className="relative"
+        style={{ height: totalHeight + MATCH_H / 2 }}
+      >
+        <svg
+          className="absolute inset-0 pointer-events-none"
+          style={{ width: numRounds * (colWidth + GAP), height: totalHeight + MATCH_H / 2 }}
+        >
+          {connections.map((c, i) => (
+            <line
               key={i}
-              team1={m.team1}
-              team2={m.team2}
-              score1={m.score1}
-              score2={m.score2}
-              pen={m.pen}
-              winner={i === 0 ? t.champion : t.runnerUp}
+              x1={c.x1}
+              y1={c.y1}
+              x2={c.x2}
+              y2={c.y2}
+              stroke="#a3a3a3"
+              strokeWidth={1.5}
+              className="dark:stroke-neutral-600"
             />
-          )) : (
-            <p className="text-xs text-neutral-400">Formato de grupo, sin eliminatorias</p>
-          )}
-        </div>
+          ))}
+        </svg>
 
-        <div className="hidden md:flex items-center self-center text-neutral-300 dark:text-neutral-600">
-          <svg width="32" height="24" viewBox="0 0 32 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="0" y1="12" x2="24" y2="12" />
-            <polyline points="24,4 32,12 24,20" />
-          </svg>
-        </div>
+        <div className="flex gap-4" style={{ gap: GAP }}>
+          {rounds.map((round, r) => {
+            const numMatches = 2 ** r
+            const matchSpace = totalHeight / numMatches
 
-        <div className="space-y-3">
-          <p className="text-center text-xs font-semibold uppercase tracking-wider text-neutral-400">
-            Final
-          </p>
-          <MatchBox
-            team1={t.champion}
-            team2={t.runnerUp}
-            winner={t.champion}
-          />
-          <div className="mt-4">
-            <p className="text-center text-xs font-semibold uppercase tracking-wider text-neutral-400">
-              Tercer lugar
-            </p>
-            <div className="mt-2">
-              <MatchBox
-                team1={t.thirdPlace}
-                team2={t.fourthPlace}
-              />
-            </div>
-          </div>
+            return (
+              <div key={round.name} className="flex flex-col" style={{ width: colWidth }}>
+                {Array.from({ length: 2 ** (numRounds - 1 - r) }).map((_, m) => {
+                  const match = round.matches[m]
+                  if (!match) return null
+                  const y = m * matchSpace + (matchSpace - MATCH_H) / 2
+
+                  return (
+                    <div
+                      key={m}
+                      className="absolute"
+                      style={{
+                        width: colWidth,
+                        top: y + MATCH_H / 4,
+                        left: r * (colWidth + GAP),
+                      }}
+                    >
+                      <MatchBox
+                        team1={match.team1}
+                        team2={match.team2}
+                        score1={match.score1}
+                        score2={match.score2}
+                        pen={match.pen}
+                      />
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>
