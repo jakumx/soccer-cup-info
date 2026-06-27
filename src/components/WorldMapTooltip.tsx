@@ -34,6 +34,11 @@ export default function WorldMapTooltip({ data }: WorldMapTooltipProps) {
                 {data.yearsWon.join(' · ')}
               </p>
             )}
+            {data.hostYears.length > 0 && (
+              <p className="mt-1.5 border-t border-neutral-100 pt-1.5 text-xs text-amber-600 dark:border-neutral-700 dark:text-amber-400">
+                {data.hostYears.length === 1 ? 'Sede' : 'Sedes'}: {data.hostYears.join(' · ')}
+              </p>
+            )}
           </div>
         </motion.div>
       )}

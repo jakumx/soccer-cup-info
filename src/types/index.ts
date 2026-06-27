@@ -57,6 +57,7 @@ export interface TooltipData {
   titles: number
   runnerUps: number
   yearsWon: number[]
+  hostYears: number[]
   x: number
   y: number
 }

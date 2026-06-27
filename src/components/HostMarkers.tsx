@@ -7,12 +7,6 @@ interface HostMarkersProps {
   pathGenerator: GeoPath
 }
 
-const hostScale = (count: number) => {
-  if (count === 1) return 6
-  if (count === 2) return 8
-  return 10
-}
-
 export default function HostMarkers({ features, pathGenerator }: HostMarkersProps) {
   const featureMap = new Map<string, Feature<Geometry, { name: string }>>()
   for (const f of features) {
@@ -20,7 +14,7 @@ export default function HostMarkers({ features, pathGenerator }: HostMarkersProp
   }
 
   return (
-    <g>
+    <g pointerEvents="none">
       {hostCountries.map((host) => {
         const feature = featureMap.get(host.topoName)
         if (!feature) return null
@@ -28,34 +22,16 @@ export default function HostMarkers({ features, pathGenerator }: HostMarkersProp
         const centroid = pathGenerator.centroid(feature)
         if (!centroid || isNaN(centroid[0]) || isNaN(centroid[1])) return null
 
-        const r = hostScale(host.count)
-        const fill = host.count >= 3 ? '#f59e0b' : host.count === 2 ? '#94a3b8' : '#a78bfa'
-
         return (
-          <g key={host.country}>
-            <circle
-              cx={centroid[0]}
-              cy={centroid[1]}
-              r={r}
-              fill={fill}
-              stroke="white"
-              strokeWidth={2}
-              className="cursor-pointer"
-            />
-            <circle
-              cx={centroid[0]}
-              cy={centroid[1]}
-              r={r + 4}
-              fill="none"
-              stroke={fill}
-              strokeWidth={1}
-              className="animate-pulse"
-              opacity={0.4}
-            />
-            <title>
-              {`${host.country} (${host.count}x): ${host.years.join(', ')}`}
-            </title>
-          </g>
+          <circle
+            key={host.country}
+            cx={centroid[0]}
+            cy={centroid[1]}
+            r={3}
+            fill="#f59e0b"
+            stroke="white"
+            strokeWidth={1.5}
+          />
         )
       })}
     </g>

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useWorldMap } from '../hooks/useWorldMap'
-import { getCountryData, buildColorScale, buildTooltipData, getTopoName } from '../utils/map-utils'
+import { getCountryData, getHostYears, buildColorScale, buildTooltipData, getTopoName } from '../utils/map-utils'
 import HostMarkers from './HostMarkers'
 import type { TooltipData } from '../types'
 import type { Feature, Geometry } from 'geojson'
@@ -54,7 +54,7 @@ export default function WorldMap({
     const rect = svg.getBoundingClientRect()
 
     onCountryHover?.(
-      buildTooltipData(featureName, countryData, event.clientX - rect.left, event.clientY - rect.top)
+      buildTooltipData(featureName, countryData, getHostYears(featureName), event.clientX - rect.left, event.clientY - rect.top)
     )
   }
 
